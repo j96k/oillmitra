@@ -95,63 +95,79 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   // ---- Phone OTP login section (primary) ----
 
   Widget _buildPhoneLoginSection() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(16),
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      const Text(
+        'Enter your mobile number',
+        style: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w800, fontSize: 22, letterSpacing: -0.4),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Text('Login or create account with phone',
-            style: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w800, fontSize: 13)),
-        const SizedBox(height: 12),
-        if (!_otpSent) ...[
-          Row(children: [
-            Expanded(
-              child: TextField(
-                controller: _otpPhone,
-                keyboardType: TextInputType.phone,
-                maxLength: 10,
-                decoration: const InputDecoration(
-                  hintText: '98765 43210',
-                  prefixText: '+91 ',
-                  prefixIcon: Icon(Icons.phone_rounded, size: 18),
-                ),
-              ),
+      const SizedBox(height: 6),
+      const Text(
+        'We\'ll send an OTP to login or create your account.',
+        style: TextStyle(color: AppColors.muted, fontSize: 13, height: 1.4),
+      ),
+      const SizedBox(height: 20),
+      if (!_otpSent) ...[
+        TextField(
+          controller: _otpPhone,
+          keyboardType: TextInputType.phone,
+          maxLength: 10,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, letterSpacing: 0.5),
+          decoration: InputDecoration(
+            hintText: '98765 43210',
+            hintStyle: TextStyle(color: AppColors.muted.withValues(alpha: 0.6), fontSize: 18),
+            prefixIcon: const Padding(
+              padding: EdgeInsets.only(left: 14, right: 8),
+              child: Text('+91', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.ink)),
             ),
-            const SizedBox(width: 8),
-            FilledButton(
-              onPressed: _otpBusy ? null : _sendOtp,
-              child: _otpBusy
-                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                  : const Text('Send OTP'),
-            ),
-          ]),
-        ] else ...[
-          TextField(
-            controller: _otpCode,
-            keyboardType: TextInputType.number,
-            maxLength: 6,
-            decoration: const InputDecoration(
-              hintText: '123456',
-              prefixIcon: Icon(Icons.lock_rounded, size: 18),
-              labelText: '6-digit OTP',
-            ),
+            prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
           ),
-          const SizedBox(height: 10),
-          FilledButton(
+        ),
+        const SizedBox(height: 14),
+        SizedBox(
+          width: double.infinity,
+          height: 52,
+          child: FilledButton(
+            onPressed: _otpBusy ? null : _sendOtp,
+            child: _otpBusy
+                ? const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2.4, color: Colors.white))
+                : const Text('Continue', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+          ),
+        ),
+      ] else ...[
+        TextField(
+          controller: _otpCode,
+          keyboardType: TextInputType.number,
+          maxLength: 6,
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700, letterSpacing: 6),
+          textAlign: TextAlign.center,
+          decoration: InputDecoration(
+            hintText: '• • • • • •',
+            hintStyle: TextStyle(color: AppColors.muted.withValues(alpha: 0.5), fontSize: 22, letterSpacing: 6),
+            counterText: '',
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+          ),
+        ),
+        const SizedBox(height: 14),
+        SizedBox(
+          width: double.infinity,
+          height: 52,
+          child: FilledButton(
             onPressed: _otpBusy ? null : _verifyOtpAndLogin,
             child: _otpBusy
-                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                : const Text('Verify & Login'),
+                ? const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2.4, color: Colors.white))
+                : const Text('Verify & Login', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
           ),
-          TextButton(
+        ),
+        const SizedBox(height: 8),
+        Center(
+          child: TextButton(
             onPressed: _otpBusy ? null : _sendOtp,
-            child: const Text('Resend OTP'),
+            child: const Text('Resend OTP', style: TextStyle(fontWeight: FontWeight.w600)),
           ),
-        ],
-      ]),
-    );
+        ),
+      ],
+    ]);
   }
 
   // ---- Username/Password login section (secondary) ----
@@ -373,19 +389,12 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                       ]),
                     ),
                   ),
-                  const SizedBox(height: 18),
-                  const Text('Used oil.\nReal value.',
-                      style: TextStyle(color: Colors.white, fontSize: 40, height: 1.02, fontWeight: FontWeight.w800, letterSpacing: -1.8)),
-                  const SizedBox(height: 12),
-                  Text('Hotels, restaurants, marriage halls and homes — list your used cooking oil. Our pickup team collects it, and you get paid on the spot.',
-                      style: TextStyle(color: Colors.white.withValues(alpha: 0.68), fontSize: 14, height: 1.55)),
-                  const SizedBox(height: 22),
-                  Wrap(spacing: 8, runSpacing: 8, children: const [
-                    _HeroChip(icon: Icons.bolt_rounded, text: 'Direct pickup'),
-                    _HeroChip(icon: Icons.payments_outlined, text: 'Paid per litre'),
-                    _HeroChip(icon: Icons.eco_rounded, text: 'Not down the drain'),
-                  ]),
-                  const SizedBox(height: 26),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Sell your used cooking oil. Get paid on pickup.',
+                    style: TextStyle(color: Colors.white.withValues(alpha: 0.82), fontSize: 15, height: 1.4, fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 20),
                 ]),
               ),
             ),
@@ -477,29 +486,6 @@ class _SmallTab extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _HeroChip extends StatelessWidget {
-  const _HeroChip({required this.icon, required this.text});
-  final IconData icon;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
-      ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(icon, size: 13, color: AppColors.gold),
-        const SizedBox(width: 5),
-        Text(text, style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.w600)),
-      ]),
     );
   }
 }
