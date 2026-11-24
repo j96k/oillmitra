@@ -58,28 +58,34 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
   Future<void> _submit() async {
     FocusScope.of(context).unfocus();
-    if (_username.text.trim().isEmpty || _password.text.isEmpty) {
-      _snack('Enter your username and password');
+    final phone = _phone.text.trim();
+    final username = _register ? phone.replaceAll(RegExp(r'\D'), '') : _username.text.trim();
+    if (username.isEmpty || _password.text.isEmpty) {
+      _snack(_register ? 'Enter your phone number and password' : 'Enter your phone number and password');
       return;
     }
     if (_register && _name.text.trim().length < 2) {
       _snack('Enter your shop or business name');
       return;
     }
+    if (_register && phone.replaceAll(RegExp(r'\D'), '').length < 10) {
+      _snack('Enter a valid 10-digit phone number');
+      return;
+    }
     setState(() => _busy = true);
     try {
       if (_register) {
         await Api.instance.register(
-          username: _username.text.trim(),
+          username: username,
           password: _password.text,
           name: _name.text.trim(),
           role: 'supplier',
           orgType: _orgType,
-          phone: _phone.text.trim(),
+          phone: phone,
           city: _city.text.trim(),
         );
       } else {
-        await Api.instance.login(_username.text.trim(), _password.text);
+        await Api.instance.login(username, _password.text);
       }
       if (!mounted) return;
       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const HomeShell()), (_) => false);
@@ -217,8 +223,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
           ]),
           const SizedBox(height: 10),
         ],
-        _field(_username, 'Username', Icons.person_outline_rounded),
-        const SizedBox(height: 10),
+        if (!_register) ...[
+          _field(_username, 'Phone number', Icons.phone_outlined, keyboard: TextInputType.phone),
+          const SizedBox(height: 10),
+        ],
         TextField(
           controller: _password,
           obscureText: _obscure,
